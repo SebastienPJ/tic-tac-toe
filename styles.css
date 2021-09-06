@@ -15,10 +15,25 @@
   display: flex;
 }
 
+
+.square {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3rem;
+
+
+}
+
+
 .top-left {
   border-bottom: 5px solid black;
   border-right: 5px solid black;
 }
+
+
 
 .top-center {
   border-bottom: 5px solid black;
@@ -48,8 +63,4 @@
   border-right: 5px solid black;
 }
 
-.square {
-  width: 100px;
-  height: 100px;
-}
 
