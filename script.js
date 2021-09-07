@@ -7,9 +7,12 @@ const players = function() {
 
   const first = playerFactory("player1", "X");
   const second = playerFactory("player2", "O");
+  const ai = playerFactory("computer", "O")
 
-  return {first, second}
+  return {first, second, ai}
 }();
+
+
 
 
 
@@ -20,9 +23,6 @@ let game = (function(){
     console.log(this); // "this" valus refers to start button
   }
 
-  
-
-  
 
 
   const over = function() {
@@ -30,49 +30,89 @@ let game = (function(){
     console.log(this);
   };
 
-  const placeMark = function () {
-    console.log(this); //"this" value refers to div clicked
+
+
+
+  const changeCurrentPlayer = function() {
+    if (_currentPlayer == players.first){
+      _currentPlayer = players.second;
+    } else {
+      _currentPlayer = players.first;
+    };
   };
 
-  let currentPlayer = function(){
 
-  };
+  const getCurrentPlayer = function() {
+    return _currentPlayer
+  };  
 
 
+
+
+  let _currentPlayer = players.first;
 
   const _startButton = document.querySelector(".start");
   _startButton.addEventListener("click", start);
 
-  const _squares = document.querySelectorAll(".square");
-  _squares.forEach((square) => {
-    square.addEventListener("click", placeMark)
-  });
+  const squares = [...document.querySelectorAll(".square")];
 
 
 
 
-  return {currentPlayer, placeMark, start}
+
+  return {getCurrentPlayer, changeCurrentPlayer, squares}
 
 })();
 
 
 let gameBoard = (function(){
 
-  const _squares = document.querySelectorAll(".square");
+  const placeMark = function () {
+    console.log(this); //"this" value refers to div clicked
+   
+    if (this.innerHTML == "") {
+      this.innerHTML = game.getCurrentPlayer().mark;
+      movesPlayedArray.push(game.getCurrentPlayer().mark)
+      game.changeCurrentPlayer();
 
+    };    
+  };
+ 
+  const convertToGrid = function(boardArray, rowSize) {
 
-  const convertToGrid = function() {
-
+    let newArray = []; 
+    for(var i = 0; i < boardArray.length; i = i + rowSize){
+      newArray.push(boardArray.slice(i, i + rowSize));
+    };
+    return newArray;
 
   };
 
+  // const movesPlayedGrid = function() {
+  //   return convertToGrid(movesPlayedArray, 3)
+  // }
 
-  const grid = convertToGrid()
+  
+
+  let movesPlayedArray = [];
+
+  // const movesPlayedGrid = convertToGrid(movesPlayedArray, 3);
 
 
-  return {grid}
+
+
+  const grid = convertToGrid(game.squares, 3)
+
+  game.squares.forEach((square) => {
+    square.addEventListener("click", placeMark)
+  });
+
+
+  return {grid, movesPlayedGrid}
 
 
 
 })();
+
+
 
