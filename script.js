@@ -33,7 +33,7 @@ let game = (function(){
 
 
 
-  const over = function() {
+  const isGameOver = function() {
 
 
     let _winningCondition1 = gameBoard.grid()[0][0].textContent != "" && gameBoard.grid()[0][0].textContent == gameBoard.grid()[0][1].textContent && gameBoard.grid()[0][0].textContent == gameBoard.grid()[0][2].textContent
@@ -49,14 +49,18 @@ let game = (function(){
     
     
     if (_winningCondition1 || _winningCondition2 || _winningCondition3 || _winningCondition4 || _winningCondition5 || _winningCondition6 || _winningCondition7 || _winningCondition8) {
-      console.log("Game over!");
-      console.log(`${getPreviousPlayer().name} has won the game`);
-      console.log(this); // "this" refers to window object
-
+      return true;
     }
   
   
   };
+
+  const winningMessage = function() {
+    console.log("Game over!");
+    console.log(`${getPreviousPlayer().name} has won the game`);
+    console.log(this); // "this" refers to window object
+
+  }
 
   const reset = function() {
     getSquares().forEach((square)=> {
@@ -71,7 +75,10 @@ let game = (function(){
       this.innerHTML = getCurrentPlayer().mark;
       _movesHistory.push(getCurrentPlayer());
       changeCurrentPlayer();
-      over();
+      if (isGameOver()) {
+        winningMessage();
+      }
+
 
     };    
   };
