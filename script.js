@@ -25,9 +25,7 @@ let game = (function(){
     }
 
 
-    getSquares().forEach((square) => {
-      square.addEventListener("click", placeMark)
-    });
+
 
   };
 
@@ -97,9 +95,12 @@ let game = (function(){
     return _currentPlayer;
   };  
 
-  const getPreviousPlayer = function() {
-    return _movesHistory[_movesHistory.length - 1]
-  }
+  
+  const  getPreviousPlayer = function() {
+    return _movesHistory[_movesHistory.length - 1];
+  
+  };
+
 
 
 
@@ -108,18 +109,17 @@ let game = (function(){
   let _gameHasStarted = false;
   let _movesHistory = [];
 
+
   const _startButton = document.querySelector(".start");
   _startButton.addEventListener("click", start);
 
-  const getSquares = function() {
-    return [...document.querySelectorAll(".square")];
-  }
 
 
 
 
 
-  return {getPreviousPlayer, getCurrentPlayer, changeCurrentPlayer, placeMark, getSquares}
+
+  return {getPreviousPlayer, getCurrentPlayer, changeCurrentPlayer, placeMark}
 
 })();
 
@@ -139,7 +139,7 @@ let gameBoard = (function(){
 
 
   const grid = function() {
-    return convertToGrid(game.getSquares(), 3)
+    return convertToGrid(getSquares(), 3)
   };
 
 
@@ -199,12 +199,20 @@ let gameBoard = (function(){
     bottomRightSquare.classList.add("bottom-right", "square");
     bottomRow.appendChild(bottomRightSquare);
 
+
+    getSquares().forEach((square) => {
+      square.addEventListener("click", game.placeMark)
+    });
+
   };
 
 
+  const getSquares = function() {
+    return [...document.querySelectorAll(".square")];
+  }
 
 
-  return {grid, createBoard}
+  return {grid, createBoard, getSquares}
 
 
 
