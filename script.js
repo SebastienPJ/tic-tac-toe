@@ -1,9 +1,7 @@
-
-
 const players = function() {
   const playerFactory = (name, mark) => {  
     return {name, mark}
-  }
+  };
 
   const first = playerFactory("player1", "X");
   const second = playerFactory("player2", "O");
@@ -20,17 +18,56 @@ let game = (function(){
   const start = function() {
  
     console.log("Game has started");
-    console.log(this); // "this" valus refers to start button
-  }
+
+    if (!_gameHasStarted) {
+      gameBoard.createBoard();
+      _gameHasStarted = true;
+    }
+
+
+    getSquares().forEach((square) => {
+      square.addEventListener("click", placeMark)
+    });
+
+  };
 
 
 
   const over = function() {
-    console.log("Game over!");
-    console.log(this);
+
+
+    let _winningCondition1 = gameBoard.grid()[0][0].textContent != "" && gameBoard.grid()[0][0].textContent == gameBoard.grid()[0][1].textContent && gameBoard.grid()[0][0].textContent == gameBoard.grid()[0][2].textContent
+    let _winningCondition2 = gameBoard.grid()[0][0].textContent != "" && gameBoard.grid()[0][0].textContent == gameBoard.grid()[1][1].textContent && gameBoard.grid()[0][0].textContent == gameBoard.grid()[2][2].textContent
+    let _winningCondition3 = gameBoard.grid()[0][0].textContent != "" && gameBoard.grid()[0][0].textContent == gameBoard.grid()[1][0].textContent && gameBoard.grid()[0][0].textContent == gameBoard.grid()[2][0].textContent
+    let _winningCondition4 = gameBoard.grid()[0][1].textContent != "" && gameBoard.grid()[0][1].textContent == gameBoard.grid()[1][1].textContent && gameBoard.grid()[0][1].textContent == gameBoard.grid()[2][1].textContent
+    let _winningCondition5 = gameBoard.grid()[0][2].textContent != "" && gameBoard.grid()[0][2].textContent == gameBoard.grid()[1][2].textContent && gameBoard.grid()[0][2].textContent == gameBoard.grid()[2][2].textContent
+    let _winningCondition6 = gameBoard.grid()[0][2].textContent != "" && gameBoard.grid()[0][2].textContent == gameBoard.grid()[1][1].textContent && gameBoard.grid()[0][2].textContent == gameBoard.grid()[2][0].textContent
+    let _winningCondition7 = gameBoard.grid()[1][0].textContent != "" && gameBoard.grid()[1][0].textContent == gameBoard.grid()[1][1].textContent && gameBoard.grid()[1][0].textContent == gameBoard.grid()[1][2].textContent
+    let _winningCondition8 = gameBoard.grid()[2][0].textContent != "" && gameBoard.grid()[2][0].textContent == gameBoard.grid()[2][1].textContent && gameBoard.grid()[2][0].textContent == gameBoard.grid()[2][2].textContent
+    
+    
+    
+    
+    if (_winningCondition1 || _winningCondition2 || _winningCondition3 || _winningCondition4 || _winningCondition5 || _winningCondition6 || _winningCondition7 || _winningCondition8) {
+      console.log("Game over!");
+      console.log(this);
+
+    }
+  
+  
   };
 
+  const placeMark = function () {
+    console.log(this); //"this" value refers to div clicked
+   
+    if (this.innerHTML == "") {
+      this.innerHTML = getCurrentPlayer().mark;
+      // movesPlayedArray.push(getCurrentPlayer().mark)
+      changeCurrentPlayer();
+      over();
 
+    };    
+  };
 
 
   const changeCurrentPlayer = function() {
@@ -50,34 +87,27 @@ let game = (function(){
 
 
   let _currentPlayer = players.first;
+  let _gameHasStarted = false;
 
   const _startButton = document.querySelector(".start");
   _startButton.addEventListener("click", start);
 
-  const squares = [...document.querySelectorAll(".square")];
+  const getSquares = function() {
+    return [...document.querySelectorAll(".square")];
+  }
 
 
 
 
 
-  return {getCurrentPlayer, changeCurrentPlayer, squares}
+  return {getCurrentPlayer, changeCurrentPlayer, placeMark, getSquares}
 
 })();
 
 
 let gameBoard = (function(){
 
-  const placeMark = function () {
-    console.log(this); //"this" value refers to div clicked
-   
-    if (this.innerHTML == "") {
-      this.innerHTML = game.getCurrentPlayer().mark;
-      movesPlayedArray.push(game.getCurrentPlayer().mark)
-      game.changeCurrentPlayer();
-
-    };    
-  };
- 
+  /*** Converts normal array to 2D array */
   const convertToGrid = function(boardArray, rowSize) {
 
     let newArray = []; 
@@ -88,31 +118,75 @@ let gameBoard = (function(){
 
   };
 
-  // const movesPlayedGrid = function() {
-  //   return convertToGrid(movesPlayedArray, 3)
-  // }
 
-  
-
-  let movesPlayedArray = [];
-
-  // const movesPlayedGrid = convertToGrid(movesPlayedArray, 3);
+  const grid = function() {
+    return convertToGrid(game.getSquares(), 3)
+  };
 
 
 
+  const createBoard = function() {
 
-  const grid = convertToGrid(game.squares, 3)
+    const board = document.createElement("div");
+    board.classList.add("board");
+    document.body.appendChild(board);
 
-  game.squares.forEach((square) => {
-    square.addEventListener("click", placeMark)
-  });
+    const topRow = document.createElement("div");
+    topRow.classList.add("top-row");
+    board.appendChild(topRow);
+
+    const topLeftSquare = document.createElement("div");
+    topLeftSquare.classList.add("top-left", "square");
+    topRow.appendChild(topLeftSquare)
+
+    const topCenterSquare = document.createElement("div");
+    topCenterSquare.classList.add("top-center", "square");
+    topRow.appendChild(topCenterSquare);
+
+    const topRightSquare = document.createElement("div");
+    topRightSquare.classList.add("top-right", "square");
+    topRow.appendChild(topRightSquare);
+
+    const middleRow = document.createElement("div");
+    middleRow.classList.add("middle-row");
+    board.appendChild(middleRow);
+
+    const middleLeftSquare = document.createElement("div");
+    middleLeftSquare.classList.add("middle-left", "square");
+    middleRow.appendChild(middleLeftSquare);
+
+    const middleCenterSquare = document.createElement("div");
+    middleCenterSquare.classList.add("middle-center", "square");
+    middleRow.appendChild(middleCenterSquare);
+
+    const middleRightSquare = document.createElement("div");
+    middleRightSquare.classList.add("middle-right", "square");
+    middleRow.appendChild(middleRightSquare);
 
 
-  return {grid, movesPlayedGrid}
+    const bottomRow = document.createElement("div");
+    bottomRow.classList.add("bottom-row");
+    board.appendChild(bottomRow);
+
+    const bottomLeftSquare = document.createElement("div");
+    bottomLeftSquare.classList.add("bottom-left", "square");
+    bottomRow.appendChild(bottomLeftSquare);
+
+    const bottomCenterSquare = document.createElement("div");
+    bottomCenterSquare.classList.add("bottom-center", "square");
+    bottomRow.appendChild(bottomCenterSquare);
+
+    const bottomRightSquare = document.createElement("div");
+    bottomRightSquare.classList.add("bottom-right", "square");
+    bottomRow.appendChild(bottomRightSquare);
+
+  };
+
+
+
+
+  return {grid, createBoard}
 
 
 
 })();
-
-
-
