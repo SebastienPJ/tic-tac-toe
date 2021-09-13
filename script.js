@@ -50,19 +50,26 @@ let game = (function(){
     
     if (_winningCondition1 || _winningCondition2 || _winningCondition3 || _winningCondition4 || _winningCondition5 || _winningCondition6 || _winningCondition7 || _winningCondition8) {
       console.log("Game over!");
-      console.log(this);
+      console.log(`${getPreviousPlayer().name} has won the game`);
+      console.log(this); // "this" refers to window object
 
     }
   
   
   };
 
+  const reset = function() {
+    getSquares().forEach((square)=> {
+      square.innerHTML = "";
+    })
+  }
+
   const placeMark = function () {
     console.log(this); //"this" value refers to div clicked
    
     if (this.innerHTML == "") {
       this.innerHTML = getCurrentPlayer().mark;
-      // movesPlayedArray.push(getCurrentPlayer().mark)
+      _movesHistory.push(getCurrentPlayer());
       changeCurrentPlayer();
       over();
 
@@ -80,14 +87,19 @@ let game = (function(){
 
 
   const getCurrentPlayer = function() {
-    return _currentPlayer
+    return _currentPlayer;
   };  
+
+  const getPreviousPlayer = function() {
+    return _movesHistory[_movesHistory.length - 1]
+  }
 
 
 
 
   let _currentPlayer = players.first;
   let _gameHasStarted = false;
+  let _movesHistory = [];
 
   const _startButton = document.querySelector(".start");
   _startButton.addEventListener("click", start);
@@ -100,7 +112,7 @@ let game = (function(){
 
 
 
-  return {getCurrentPlayer, changeCurrentPlayer, placeMark, getSquares}
+  return {getPreviousPlayer, getCurrentPlayer, changeCurrentPlayer, placeMark, getSquares}
 
 })();
 

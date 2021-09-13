@@ -32,13 +32,13 @@
 @keyframes top-to-bottom {
   0% {
     height: 0;
-    background-color: red;
+    background-color: black;
   }
 
 
   100% {
     height: 100%;
-    background-color: red;
+    background-color: black;
 
   }
 
@@ -76,13 +76,13 @@
 @keyframes left-to-right {
   0% {
     width: 0;
-    background-color: red;
+    background-color: black;
   }
 
 
   100% {
     width: 100%;
-    background-color: red;
+    background-color: black;
   }
 }
 
