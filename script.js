@@ -15,7 +15,7 @@ const players = function() {
 
 
 let game = (function(){
-  const start = function() {
+  const start = function(currentGameMode) {
  
     console.log("Game has started");
 
@@ -23,9 +23,6 @@ let game = (function(){
       gameBoard.createBoard();
       _gameHasStarted = true;
     }
-
-
-
 
   };
 
@@ -53,10 +50,12 @@ let game = (function(){
   
   };
 
-  const winningMessage = function() {
+  const winningMessage = function(winner) {
     console.log("Game over!");
-    console.log(`${getPreviousPlayer().name} has won the game`);
-    console.log(this); // "this" refers to window object
+    // console.log(`${getPreviousPlayer().name} has won the game`);
+
+    console.log(`${winner.name} has won the game!`);
+    // console.log(this); // "this" refers to window object
 
   }
 
@@ -66,16 +65,20 @@ let game = (function(){
     })
   }
 
-  const placeMark = function () {
-    console.log(this); //"this" value refers to div clicked
+  const playTurn = function (currentSquare, currentPlayerObj) {
    
-    if (this.innerHTML == "") {
-      this.innerHTML = getCurrentPlayer().mark;
-      _movesHistory.push(getCurrentPlayer());
+    if (currentSquare.innerHTML == "") {
+
+      currentSquare.innerHTML = currentPlayerObj.mark;
+      _movesHistory.push(currentPlayerObj);
+
       changeCurrentPlayer();
+
       if (isGameOver()) {
-        winningMessage();
+        winningMessage(currentPlayerObj);
       }
+
+      ai();
 
 
     };    
@@ -95,11 +98,23 @@ let game = (function(){
     return _currentPlayer;
   };  
 
+
+  const ai = function() {
+    let currentBoard = gameBoard.getSquares();
+    let openSpaces = currentBoard.filter(square => square.textContent == "")
+    let randomNumber = Math.floor(Math.random() * openSpaces.length)
+
+    openSpaces[randomNumber].textContent = "O"
+    changeCurrentPlayer()
+
+    console.log(openSpaces);
+    console.log(randomNumber);
+  }
   
-  const  getPreviousPlayer = function() {
-    return _movesHistory[_movesHistory.length - 1];
+  // const  getPreviousPlayer = function() {
+  //   return _movesHistory[_movesHistory.length - 1];
   
-  };
+  // };
 
 
 
@@ -108,18 +123,19 @@ let game = (function(){
   let _currentPlayer = players.first;
   let _gameHasStarted = false;
   let _movesHistory = [];
+  let _gameMode = ""; //single player or 2 player game
 
 
-  const _startButton = document.querySelector(".start");
-  _startButton.addEventListener("click", start);
-
-
-
-
+  const _2player = document.querySelector("._2player");
+  _2player.addEventListener("click", start);
 
 
 
-  return {getPreviousPlayer, getCurrentPlayer, changeCurrentPlayer, placeMark}
+
+
+
+
+  return {getCurrentPlayer, changeCurrentPlayer, playTurn} // removed getPreviousPlayer
 
 })();
 
@@ -201,7 +217,10 @@ let gameBoard = (function(){
 
 
     getSquares().forEach((square) => {
-      square.addEventListener("click", game.placeMark)
+      square.addEventListener("click", () => {
+        game.playTurn(square, game.getCurrentPlayer())
+
+      })
     });
 
   };
