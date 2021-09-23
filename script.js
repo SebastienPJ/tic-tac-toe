@@ -16,8 +16,9 @@ const players = function() {
 
 let game = (function(){
   const start = function(currentGameMode) {
- 
     console.log("Game has started");
+
+    _gameMode = currentGameMode;
 
     if (!_gameHasStarted) {
       gameBoard.createBoard();
@@ -45,6 +46,8 @@ let game = (function(){
     
     if (_winningCondition1 || _winningCondition2 || _winningCondition3 || _winningCondition4 || _winningCondition5 || _winningCondition6 || _winningCondition7 || _winningCondition8) {
       return true;
+    } else {
+      return false
     }
   
   
@@ -65,29 +68,44 @@ let game = (function(){
     })
   }
 
-  const playTurn = function (currentSquare, currentPlayerObj) {
+  const playTurn = function (chosenSquare, currentPlayerObj, mode) {
+    console.log(chosenSquare);
    
-    if (currentSquare.innerHTML == "") {
+    if (chosenSquare.innerHTML == "" && !isGameOver()) {
 
-      currentSquare.innerHTML = currentPlayerObj.mark;
+      chosenSquare.innerHTML = currentPlayerObj.mark;
       _movesHistory.push(currentPlayerObj);
 
-      changeCurrentPlayer();
+      changeCurrentPlayer(mode);
 
       if (isGameOver()) {
         winningMessage(currentPlayerObj);
       }
 
-      ai();
+      if (currentPlayerObj.name == "computer") {
+        return
+      }
+
+      if (mode == "1Player") {
+        setTimeout(() => playTurn(computerMove(), players.ai, mode), 2000)
+        ;
+      }  
+      
 
 
     };    
   };
 
 
-  const changeCurrentPlayer = function() {
+  const changeCurrentPlayer = function(numberOfPlayers) {
+
+
     if (_currentPlayer == players.first){
-      _currentPlayer = players.second;
+      if (numberOfPlayers == "2Player") {
+        _currentPlayer = players.second;
+      } else { 
+        _currentPlayer = players.ai;
+      }
     } else {
       _currentPlayer = players.first;
     };
@@ -96,19 +114,29 @@ let game = (function(){
 
   const getCurrentPlayer = function() {
     return _currentPlayer;
-  };  
+  };
+  
+  const getCurrentGameMode = function(){
+    return _gameMode
+  }
 
 
-  const ai = function() {
+  const computerMove = function() {
     let currentBoard = gameBoard.getSquares();
     let openSpaces = currentBoard.filter(square => square.textContent == "")
     let randomNumber = Math.floor(Math.random() * openSpaces.length)
 
+
+    return openSpaces[randomNumber];
+
     openSpaces[randomNumber].textContent = "O"
+
+
+
     changeCurrentPlayer()
 
-    console.log(openSpaces);
-    console.log(randomNumber);
+    // console.log(openSpaces);
+    // console.log(randomNumber);
   }
   
   // const  getPreviousPlayer = function() {
@@ -123,11 +151,15 @@ let game = (function(){
   let _currentPlayer = players.first;
   let _gameHasStarted = false;
   let _movesHistory = [];
-  let _gameMode = ""; //single player or 2 player game
+  let _gameMode; //single player or 2 player game
+  
 
+
+  const _1Player = document.querySelector("._1player")
+  _1Player.addEventListener("click", start.bind(_1Player, "1Player"))
 
   const _2player = document.querySelector("._2player");
-  _2player.addEventListener("click", start);
+  _2player.addEventListener("click", start.bind(_2player, "2Player"));
 
 
 
@@ -135,7 +167,7 @@ let game = (function(){
 
 
 
-  return {getCurrentPlayer, changeCurrentPlayer, playTurn} // removed getPreviousPlayer
+  return {getCurrentPlayer, changeCurrentPlayer, playTurn, getCurrentGameMode} // removed getPreviousPlayer
 
 })();
 
@@ -145,11 +177,11 @@ let gameBoard = (function(){
   /*** Converts normal array to 2D array */
   const convertToGrid = function(boardArray, rowSize) {
 
-    let newArray = []; 
+    let _2dArray = []; 
     for(var i = 0; i < boardArray.length; i = i + rowSize){
-      newArray.push(boardArray.slice(i, i + rowSize));
+      _2dArray.push(boardArray.slice(i, i + rowSize));
     };
-    return newArray;
+    return _2dArray;
 
   };
 
@@ -161,10 +193,11 @@ let gameBoard = (function(){
 
 
   const createBoard = function() {
+    const gameDiv = document.querySelector(".game")
 
     const board = document.createElement("div");
     board.classList.add("board");
-    document.body.appendChild(board);
+    gameDiv.appendChild(board);
 
     const topRow = document.createElement("div");
     topRow.classList.add("top-row");
@@ -218,7 +251,7 @@ let gameBoard = (function(){
 
     getSquares().forEach((square) => {
       square.addEventListener("click", () => {
-        game.playTurn(square, game.getCurrentPlayer())
+        game.playTurn(square, game.getCurrentPlayer(), game.getCurrentGameMode())
 
       })
     });
