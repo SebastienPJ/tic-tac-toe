@@ -87,11 +87,8 @@ let game = (function(){
       }
 
       if (mode == "1Player") {
-        setTimeout(() => playTurn(computerMove(), players.ai, mode), 2000)
-        ;
-      }  
-      
-
+        setTimeout(() => playTurn(computerMove(), players.ai, mode), 2000);
+      };
 
     };    
   };
