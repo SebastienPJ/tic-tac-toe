@@ -1,44 +1,87 @@
-.game {
-  display: flex;
+html, body {
+  margin: 0;
+  padding: 0;
 }
 
+h1 {
+  text-align: center;
+  font-family: 'Libre Franklin', sans-serif;
+  font-weight: 600;
+  font-style: italic;
+
+
+}
+h2 {
+  font-family: 'Libre Franklin', sans-serif;
+  font-weight: 300;
+
+}
 
 .board {
-  /* border: 1px solid blue; */
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
+  margin: 30px 0 30px 0;
 
 }
 
 .game-mode {
-  /* height: 450px; */
-  /* border: 2px solid black; */
-  margin-right: 100px;
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: center;
+}
+
+button {
+  padding: 5px 0 5px 0;
+  width: 8rem;
+  margin: 10px 5px 10px 5px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0);
+  color: #fff;
+  background-color: #008CBA;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+button:hover {
+  border: 1px solid rgba(255, 255, 255, 0.9);
+
+}
+
+.game-controls {
+justify-content: center;
+display: none;
 }
 
 
-/* .board::before {
-  content: "";
-  width: 5px;
-  height: 5px;
+
+.endgame-popup {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.9);
   position: absolute;
-  left: 897px;
   top: 0;
-  animation: top-to-bottom 3s ease-in forwards;
+  justify-content: center;
+  align-items: center;
+  display: none;
+  z-index: 1;
+
+}
+
+.endgame-message {
+  font-size: 2em;
+  font-family: 'Libre Franklin', sans-serif;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
+
+
 }
 
 
-.board::after {
-  content: "";
-  width: 5px;
-  height: 5px;
-  position: absolute;
-  left: 997px;
-  top: 0;
-  animation: top-to-bottom 3s forwards 3s;
-} */
+
 
 @keyframes top-to-bottom {
   0% {
@@ -54,7 +97,6 @@
   }
 
 }
-
 
 .top-row,
 .middle-row,
@@ -84,6 +126,9 @@
   animation: left-to-right 1s ease-in forwards 3s;
 }
 
+
+
+
 @keyframes left-to-right {
   0% {
     width: 0;
@@ -99,8 +144,8 @@
 
 
 .square {
-  width: 150px;
-  height: 150px;
+  width: 100px;
+  height: 100px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -111,8 +156,6 @@
 
 
 .top-left {
-  /* border-bottom: 5px solid black; */
-  /* border-right: 5px solid black; */
   position: relative;
 }
 
@@ -132,8 +175,6 @@
 
 
 .top-center {
-  /* border-bottom: 5px solid black; */
-  /* border-right: 5px solid black; */
   position: relative;
 }
 
@@ -147,13 +188,9 @@
   animation: top-to-bottom 0.3s ease-in forwards 1s;
 }
 
-.top-right {
-  /* border-bottom: 5px solid black; */
-}
+
 
 .middle-left {
-  /* border-bottom: 5px solid black; */
-  /* border-right: 5px solid black; */
   position: relative;
 }
 
@@ -169,8 +206,6 @@
 }
 
 .middle-center {
-  /* border-bottom: 5px solid black; */
-  /* border-right: 5px solid black; */
   position: relative;
 }
 
@@ -185,13 +220,8 @@
   animation: top-to-bottom 0.3s ease-in forwards 1.3s;
 }
 
-.middle-right {
-  /* border-bottom: 5px solid black; */
-}
 
 .bottom-center {
-  /* border-left: 5px solid black; */
-  /* border-right: 5px solid black; */
   position: relative;
 }
 

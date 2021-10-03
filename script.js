@@ -3,9 +3,9 @@ const players = function() {
     return {name, mark}
   };
 
-  const first = playerFactory("player1", "X");
-  const second = playerFactory("player2", "O");
-  const ai = playerFactory("computer", "O")
+  const first = playerFactory("Player 1", "X");
+  const second = playerFactory("Payer 2", "O");
+  const ai = playerFactory("Computer", "O")
 
   return {first, second, ai}
 }();
@@ -18,80 +18,137 @@ let game = (function(){
   const start = function(currentGameMode) {
     console.log("Game has started");
 
+
     _gameMode = currentGameMode;
 
     if (!_gameHasStarted) {
       gameBoard.createBoard();
+      _playerButtons.setAttribute("style", "display:none")
+      _gameControls.setAttribute("style", "display:flex")
       _gameHasStarted = true;
     }
 
   };
 
-
-
-  const isGameOver = function() {
-
-
-    let _winningCondition1 = gameBoard.grid()[0][0].textContent != "" && gameBoard.grid()[0][0].textContent == gameBoard.grid()[0][1].textContent && gameBoard.grid()[0][0].textContent == gameBoard.grid()[0][2].textContent
-    let _winningCondition2 = gameBoard.grid()[0][0].textContent != "" && gameBoard.grid()[0][0].textContent == gameBoard.grid()[1][1].textContent && gameBoard.grid()[0][0].textContent == gameBoard.grid()[2][2].textContent
-    let _winningCondition3 = gameBoard.grid()[0][0].textContent != "" && gameBoard.grid()[0][0].textContent == gameBoard.grid()[1][0].textContent && gameBoard.grid()[0][0].textContent == gameBoard.grid()[2][0].textContent
-    let _winningCondition4 = gameBoard.grid()[0][1].textContent != "" && gameBoard.grid()[0][1].textContent == gameBoard.grid()[1][1].textContent && gameBoard.grid()[0][1].textContent == gameBoard.grid()[2][1].textContent
-    let _winningCondition5 = gameBoard.grid()[0][2].textContent != "" && gameBoard.grid()[0][2].textContent == gameBoard.grid()[1][2].textContent && gameBoard.grid()[0][2].textContent == gameBoard.grid()[2][2].textContent
-    let _winningCondition6 = gameBoard.grid()[0][2].textContent != "" && gameBoard.grid()[0][2].textContent == gameBoard.grid()[1][1].textContent && gameBoard.grid()[0][2].textContent == gameBoard.grid()[2][0].textContent
-    let _winningCondition7 = gameBoard.grid()[1][0].textContent != "" && gameBoard.grid()[1][0].textContent == gameBoard.grid()[1][1].textContent && gameBoard.grid()[1][0].textContent == gameBoard.grid()[1][2].textContent
-    let _winningCondition8 = gameBoard.grid()[2][0].textContent != "" && gameBoard.grid()[2][0].textContent == gameBoard.grid()[2][1].textContent && gameBoard.grid()[2][0].textContent == gameBoard.grid()[2][2].textContent
-    
-    
-    
-    
-    if (_winningCondition1 || _winningCondition2 || _winningCondition3 || _winningCondition4 || _winningCondition5 || _winningCondition6 || _winningCondition7 || _winningCondition8) {
-      return true;
-    } else {
-      return false
-    }
-  
-  
-  };
-
-  const winningMessage = function(winner) {
-    console.log("Game over!");
-    // console.log(`${getPreviousPlayer().name} has won the game`);
-
-    console.log(`${winner.name} has won the game!`);
-    // console.log(this); // "this" refers to window object
-
-  }
-
-  const reset = function() {
-    getSquares().forEach((square)=> {
-      square.innerHTML = "";
-    })
-  }
-
   const playTurn = function (chosenSquare, currentPlayerObj, mode) {
-    console.log(chosenSquare);
-   
-    if (chosenSquare.innerHTML == "" && !isGameOver()) {
 
-      chosenSquare.innerHTML = currentPlayerObj.mark;
-      _movesHistory.push(currentPlayerObj);
+    let gameStatus = isGameOver(gameBoard.grid())
+
+ 
+    if (chosenSquare.innerHTML == "" && gameStatus == false) {
+
 
       changeCurrentPlayer(mode);
 
-      if (isGameOver()) {
-        winningMessage(currentPlayerObj);
+      chosenSquare.innerHTML = currentPlayerObj.mark;
+
+
+      gameStatus = isGameOver(gameBoard.grid())
+
+     if (gameStatus == true) {
+        displayEndgame(currentPlayerObj);
+      } else if (gameStatus == "tie") {
+        displayEndgame("tie")
       }
 
-      if (currentPlayerObj.name == "computer") {
-        return
-      }
-
-      if (mode == "1Player") {
-        setTimeout(() => playTurn(computerMove(), players.ai, mode), 2000);
+      if (mode == "1Player" && _currentPlayer == players.ai && !isGameOver(gameBoard.grid())) {
+        setTimeout(() => playTurn(computerMove(), players.ai, mode), 1000);
       };
 
     };    
   };
+
+
+
+  const isGameOver = function(board) {
+
+
+    let _winningCondition1 = board[0][0].textContent != "" && board[0][0].textContent == board[0][1].textContent && board[0][0].textContent == board[0][2].textContent
+    let _winningCondition2 = board[0][0].textContent != "" && board[0][0].textContent == board[1][1].textContent && board[0][0].textContent == board[2][2].textContent
+    let _winningCondition3 = board[0][0].textContent != "" && board[0][0].textContent == board[1][0].textContent && board[0][0].textContent == board[2][0].textContent
+    let _winningCondition4 = board[0][1].textContent != "" && board[0][1].textContent == board[1][1].textContent && board[0][1].textContent == board[2][1].textContent
+    let _winningCondition5 = board[0][2].textContent != "" && board[0][2].textContent == board[1][2].textContent && board[0][2].textContent == board[2][2].textContent
+    let _winningCondition6 = board[0][2].textContent != "" && board[0][2].textContent == board[1][1].textContent && board[0][2].textContent == board[2][0].textContent
+    let _winningCondition7 = board[1][0].textContent != "" && board[1][0].textContent == board[1][1].textContent && board[1][0].textContent == board[1][2].textContent
+    let _winningCondition8 = board[2][0].textContent != "" && board[2][0].textContent == board[2][1].textContent && board[2][0].textContent == board[2][2].textContent
+    
+    
+    
+    
+    if (_winningCondition1 || _winningCondition2 || _winningCondition3 
+          || _winningCondition4 || _winningCondition5 || _winningCondition6 
+          || _winningCondition7 || _winningCondition8){
+
+      return true;
+    } 
+    
+    else if (gameBoard.getOpenSpaces().length == 0){
+      return "tie"
+
+    }
+
+    
+    
+    
+    return false
+
+    
+  
+  
+  };
+
+
+
+  const displayEndgame = function(winner) {
+    const endgameMessage = document.querySelector(".endgame-message h2");
+
+    _endgamePopup.setAttribute("style", "display:flex")
+    _gameControls.setAttribute("style", "display:none")
+
+    if (winner !== "tie") {
+      endgameMessage.textContent = `${winner.name} wins!`
+    } else {
+      endgameMessage.textContent = "It's a tie!"
+    }
+
+
+  }
+
+
+  const resetGame = function() {
+    const boardGame = document.querySelector(".board");
+    const row1 = document.querySelector(".top-row");
+    const row2 = document.querySelector(".middle-row");
+    const row3 = document.querySelector(".bottom-row");
+    boardGame.removeChild(row1);
+    boardGame.removeChild(row2);
+    boardGame.removeChild(row3);
+
+    _endgamePopup.setAttribute("style", "display:none")
+    _playerButtons.setAttribute("style", "display:flex")
+    _gameControls.setAttribute("style", "display:none")
+
+
+    _currentPlayer = players.first;
+    _gameHasStarted = false;
+  }
+
+
+
+  const newRound = function() {
+    console.log("Game has restarted")
+    gameBoard.getSquares().forEach((square)=> {
+      square.innerHTML = "";
+    })
+
+    _endgamePopup.setAttribute("style", "display:none")
+    _gameControls.setAttribute("style", "display:flex")
+
+
+    _currentPlayer = players.first;
+  }
+
+
 
 
   const changeCurrentPlayer = function(numberOfPlayers) {
@@ -119,27 +176,17 @@ let game = (function(){
 
 
   const computerMove = function() {
-    let currentBoard = gameBoard.getSquares();
-    let openSpaces = currentBoard.filter(square => square.textContent == "")
-    let randomNumber = Math.floor(Math.random() * openSpaces.length)
 
+    let currentBoard = gameBoard.getOpenSpaces();
+ 
+    let randomNumber = Math.floor(Math.random() * currentBoard.length)
+    console.log(randomNumber);
 
-    return openSpaces[randomNumber];
+    return currentBoard[randomNumber];
 
-    openSpaces[randomNumber].textContent = "O"
-
-
-
-    changeCurrentPlayer()
-
-    // console.log(openSpaces);
-    // console.log(randomNumber);
   }
   
-  // const  getPreviousPlayer = function() {
-  //   return _movesHistory[_movesHistory.length - 1];
-  
-  // };
+
 
 
 
@@ -147,24 +194,44 @@ let game = (function(){
 
   let _currentPlayer = players.first;
   let _gameHasStarted = false;
-  let _movesHistory = [];
   let _gameMode; //single player or 2 player game
+
+  
   
 
 
-  const _1Player = document.querySelector("._1player")
+  const _1Player = document.querySelector("._1player-button")
   _1Player.addEventListener("click", start.bind(_1Player, "1Player"))
 
-  const _2player = document.querySelector("._2player");
+  const _2player = document.querySelector("._2player-button");
   _2player.addEventListener("click", start.bind(_2player, "2Player"));
 
 
 
+  const _endgamePopup = document.querySelector(".endgame-popup");
+
+  const _playerButtons = document.querySelector('.game-mode');
+
+  const _gameControls = document.querySelector(".game-controls");
+
+  const _newRoundButtons = [...document.querySelectorAll(".new-round")];
+  _newRoundButtons.forEach((button) =>{
+    button.addEventListener("click", newRound)
+  })
+
+  const _newGameButtons = [...document.querySelectorAll(".new-game")];
+  _newGameButtons.forEach((button) =>{
+    button.addEventListener("click", resetGame)
+  })
 
 
 
 
-  return {getCurrentPlayer, changeCurrentPlayer, playTurn, getCurrentGameMode} // removed getPreviousPlayer
+
+
+
+
+  return {computerMove, getCurrentPlayer, changeCurrentPlayer, playTurn, getCurrentGameMode} // removed getPreviousPlayer
 
 })();
 
@@ -190,11 +257,8 @@ let gameBoard = (function(){
 
 
   const createBoard = function() {
-    const gameDiv = document.querySelector(".game")
+    const board = document.querySelector(".board");
 
-    const board = document.createElement("div");
-    board.classList.add("board");
-    gameDiv.appendChild(board);
 
     const topRow = document.createElement("div");
     topRow.classList.add("top-row");
@@ -248,7 +312,12 @@ let gameBoard = (function(){
 
     getSquares().forEach((square) => {
       square.addEventListener("click", () => {
-        game.playTurn(square, game.getCurrentPlayer(), game.getCurrentGameMode())
+        let player = game.getCurrentPlayer();
+
+        if (player == players.first || player == players.second) {
+          game.playTurn(square, player, game.getCurrentGameMode())
+
+        }
 
       })
     });
@@ -258,10 +327,18 @@ let gameBoard = (function(){
 
   const getSquares = function() {
     return [...document.querySelectorAll(".square")];
-  }
+
+  };
+
+  const getOpenSpaces = function() {
+
+    
+    return getSquares().filter(square => square.textContent == "")
+  };
 
 
-  return {grid, createBoard, getSquares}
+
+  return {grid, createBoard, getSquares, getOpenSpaces}
 
 
 
