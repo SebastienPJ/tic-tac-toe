@@ -18,6 +18,7 @@ Topics learned/reinforced:
 - Namespacing, Scope, Closure and _this_ keyword
 - Private and Public Scope
 - ```.call(), .apply(), .bind()```
+- CSS Animations
 - DOM Manipulation:
   - Selecting elements using Javascript
   - Adding and removing content from page 
